@@ -16,6 +16,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function NewBuisnessPage() {
   const [error, setError] = useState<string | undefined>("");
@@ -27,6 +28,8 @@ export default function NewBuisnessPage() {
     },
   });
 
+  const { toast } = useToast();
+
   function onsubmit(values: z.infer<typeof BuisnessSchema>) {
     setError("");
     console.log(values);
@@ -35,6 +38,11 @@ export default function NewBuisnessPage() {
     //   setError(data?.error);
     // });
     // });
+    toast({
+      duration: 2000,
+      title: "Error",
+      description: "Friday, February 10, 2023 at 5:57 PM",
+    });
   }
 
   const route = useRouter();
@@ -45,7 +53,7 @@ export default function NewBuisnessPage() {
   return (
     <div className="flex flex-col items-center min-h-96 h-[70%] mt-8 bg-slate-50 w-fit rounded-md p-4 mx-auto">
       <div className="w-full flex justify-center items-center ">
-        <h1 className="text-2xl my-4">Create New Buisness</h1>
+        <h1 className="text-2xl my-4">Edit Buisness</h1>
       </div>
       <div className="w-96 h-72 flex justify-center ">
         <Form {...form}>
@@ -72,6 +80,13 @@ export default function NewBuisnessPage() {
                   </FormItem>
                 )}
               ></FormField>
+              <Button
+                type="button"
+                className="w-full text-red-500 bg-slate-50 border"
+                // disabled={isPending}
+              >
+                Delete Buisness
+              </Button>
             </div>
             <div className="flex flex-row space-x-4">
               <Button

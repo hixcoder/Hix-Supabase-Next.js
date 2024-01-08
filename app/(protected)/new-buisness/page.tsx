@@ -1,5 +1,4 @@
 "use client";
-import { BuisnessItem } from "@/components/protected/dashboard/buisness-item";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,13 +13,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { startTransition, useState } from "react";
+import { startTransition, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
+import { createNewBuisness } from "@/actions/buisness";
 
 export default function NewBuisnessPage() {
-  const [error, setError] = useState<string | undefined>("");
-
   const form = useForm<z.infer<typeof BuisnessSchema>>({
     resolver: zodResolver(BuisnessSchema),
     defaultValues: {
@@ -29,19 +28,24 @@ export default function NewBuisnessPage() {
   });
 
   const { toast } = useToast();
+  const { data } = useSession();
+  const [isPending, startTransition] = useTransition();
 
   function onsubmit(values: z.infer<typeof BuisnessSchema>) {
-    setError("");
     console.log(values);
-    // startTransition(() => {
-    // login(values).then((data) => {
-    //   setError(data?.error);
-    // });
-    // });
-    toast({
-      duration: 2000,
-      title: "Error",
-      description: "Friday, February 10, 2023 at 5:57 PM",
+    console.log(data);
+    startTransition(() => {
+      createNewBuisness(values, data!.user!.id).then((data) => {
+        if (data.error) {
+          toast({
+            duration: 2000,
+            title: "Error",
+            description: data.error,
+          });
+          return;
+        }
+        handleClick();
+      });
     });
   }
 
@@ -71,7 +75,7 @@ export default function NewBuisnessPage() {
                     <FormControl>
                       <Input
                         {...field}
-                        // disabled={isPending}
+                        disabled={isPending}
                         placeholder="Enter buisness name"
                         type="text"
                       />
@@ -85,7 +89,7 @@ export default function NewBuisnessPage() {
               <Button
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700"
-                // disabled={isPending}
+                disabled={isPending}
               >
                 Save
               </Button>
@@ -93,7 +97,7 @@ export default function NewBuisnessPage() {
                 type="button"
                 onClick={handleClick}
                 className="w-full bg-slate-500 hover:bg-slate-600"
-                // disabled={isPending}
+                disabled={isPending}
               >
                 Cancel
               </Button>
