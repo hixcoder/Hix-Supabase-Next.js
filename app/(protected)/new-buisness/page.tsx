@@ -32,8 +32,8 @@ export default function NewBuisnessPage() {
   const [isPending, startTransition] = useTransition();
 
   function onsubmit(values: z.infer<typeof BuisnessSchema>) {
-    console.log(values);
-    console.log(data);
+    // console.log(values);
+    // console.log(data);
     startTransition(() => {
       createNewBuisness(values, data!.user!.id).then((data) => {
         if (data.error) {

@@ -8,7 +8,7 @@ export function BuisnessItem(props: {
 }) {
   const route = useRouter();
   function handleClick() {
-    route.push("/edit-buisness");
+    route.push(`/edit-buisness?id=${props.data.id}`);
   }
   // console.log(
   //   "props.isEditDisable, props.data.name",

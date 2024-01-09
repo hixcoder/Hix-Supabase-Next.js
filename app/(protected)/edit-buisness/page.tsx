@@ -14,13 +14,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { startTransition, useState } from "react";
-import { useRouter } from "next/navigation";
+import { startTransition, useState, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-
-export default function NewBuisnessPage() {
-  const [error, setError] = useState<string | undefined>("");
-
+import { deleteBuisness, updateBuisness } from "@/actions/buisness";
+import { useSession } from "next-auth/react";
+export default function NewBuisnessPage(props: {
+  data: Buisness;
+  isEditDisable: boolean;
+}) {
   const form = useForm<z.infer<typeof BuisnessSchema>>({
     resolver: zodResolver(BuisnessSchema),
     defaultValues: {
@@ -28,26 +30,51 @@ export default function NewBuisnessPage() {
     },
   });
 
+  const { data } = useSession();
+
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const buisnessId = searchParams.get("id");
+
+  // Access query parameters
 
   function onsubmit(values: z.infer<typeof BuisnessSchema>) {
-    setError("");
-    console.log(values);
-    // startTransition(() => {
-    // login(values).then((data) => {
-    //   setError(data?.error);
-    // });
-    // });
-    toast({
-      duration: 2000,
-      title: "Error",
-      description: "Friday, February 10, 2023 at 5:57 PM",
+    console.log(buisnessId);
+    startTransition(() => {
+      updateBuisness(values, data!.user!.id, buisnessId!).then((data) => {
+        if (data.error) {
+          toast({
+            duration: 2000,
+            title: "Error",
+            description: data.error,
+          });
+          return;
+        }
+        handleClick();
+      });
     });
   }
 
   const route = useRouter();
   function handleClick() {
     route.push("/dashboard");
+  }
+
+  function handleDelete() {
+    startTransition(() => {
+      deleteBuisness(data!.user!.id, buisnessId!).then((data) => {
+        if (data.error) {
+          toast({
+            duration: 2000,
+            title: "Error",
+            description: data.error,
+          });
+          return;
+        }
+        handleClick();
+      });
+    });
   }
 
   return (
@@ -71,8 +98,8 @@ export default function NewBuisnessPage() {
                     <FormControl>
                       <Input
                         {...field}
-                        // disabled={isPending}
-                        placeholder="Enter buisness name"
+                        disabled={isPending}
+                        placeholder="Enter new buisness name"
                         type="text"
                       />
                     </FormControl>
@@ -81,9 +108,10 @@ export default function NewBuisnessPage() {
                 )}
               ></FormField>
               <Button
+                onClick={handleDelete}
                 type="button"
                 className="w-full text-red-500 bg-slate-50 border"
-                // disabled={isPending}
+                disabled={isPending}
               >
                 Delete Buisness
               </Button>
@@ -92,7 +120,7 @@ export default function NewBuisnessPage() {
               <Button
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700"
-                // disabled={isPending}
+                disabled={isPending}
               >
                 Save
               </Button>
@@ -100,7 +128,7 @@ export default function NewBuisnessPage() {
                 type="button"
                 onClick={handleClick}
                 className="w-full bg-slate-500 hover:bg-slate-600"
-                // disabled={isPending}
+                disabled={isPending}
               >
                 Cancel
               </Button>
