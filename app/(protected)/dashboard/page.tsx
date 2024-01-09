@@ -55,6 +55,13 @@ export default function DashboardPage() {
             />
           ))}
       </div>
+      {buisnessList.length === 0 && (
+        <div>
+          <p className="mx-auto text-2xl text-gray-400">
+            No buisness created yet!
+          </p>
+        </div>
+      )}
     </div>
   );
 }

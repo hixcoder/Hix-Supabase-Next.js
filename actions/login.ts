@@ -7,7 +7,7 @@ import { signIn } from "@/auth";
 import { z } from "zod";
 
 export async function login(values: z.infer<typeof LoginSchema>) {
-  console.log(values);
+  // console.log(values);
   const validatedFields = LoginSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };

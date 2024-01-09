@@ -6,7 +6,7 @@ import bcryptjs from "bcryptjs";
 import { db } from "@/lib/db";
 import { getUserByEmail } from "@/data/user";
 export async function register(values: z.infer<typeof RegisterSchema>) {
-  console.log(values);
+  // console.log(values);
   const validatedFields = RegisterSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };

@@ -18,6 +18,7 @@ import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { useState, useTransition } from "react";
 import { register } from "@/actions/register";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
   const [isPending, startTransition] = useTransition();
@@ -32,6 +33,7 @@ export function RegisterForm() {
       name: "",
     },
   });
+  const router = useRouter();
 
   function onsubmit(values: z.infer<typeof RegisterSchema>) {
     setError("");
@@ -39,8 +41,14 @@ export function RegisterForm() {
     console.log(values);
     startTransition(() => {
       register(values).then((data) => {
+        if (data.success === "User created!") {
+          setSuccess(data.success);
+
+          setTimeout(() => {
+            router.push("/auth/login");
+          }, 1000);
+        }
         setError(data.error);
-        setSuccess(data.success);
       });
     });
   }
