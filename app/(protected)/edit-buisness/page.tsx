@@ -1,5 +1,4 @@
 "use client";
-import { BuisnessItem } from "@/components/protected/dashboard/buisness-item";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,10 +18,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { deleteBuisness, updateBuisness } from "@/actions/buisness";
 import { useSession } from "next-auth/react";
-export default function NewBuisnessPage(props: {
-  data: Buisness;
-  isEditDisable: boolean;
-}) {
+export default function EditBuisnessPage() {
   const form = useForm<z.infer<typeof BuisnessSchema>>({
     resolver: zodResolver(BuisnessSchema),
     defaultValues: {
@@ -40,7 +36,7 @@ export default function NewBuisnessPage(props: {
   // Access query parameters
 
   function onsubmit(values: z.infer<typeof BuisnessSchema>) {
-    console.log(buisnessId);
+    // console.log(buisnessId);
     startTransition(() => {
       updateBuisness(values, data!.user!.id, buisnessId!).then((data) => {
         if (data.error) {

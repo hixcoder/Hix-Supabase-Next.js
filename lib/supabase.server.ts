@@ -1,14 +1,13 @@
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "./database.types";
 import { env } from "./env.server";
+import { Database } from "./supabase.client";
 
-
-
-export const supabaseWithServiceRoleForServer = createClient<Database>(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-
-
+export const supabaseWithServiceRoleForServer = createClient<Database>(
+  env.NEXT_PUBLIC_SUPABASE_URL,
+  env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 export function createSupabaseForServerComponent() {
   const cookieStore = cookies();
@@ -32,8 +31,6 @@ export function createSupabaseForServerComponent() {
   return supabase;
 }
 
-
-
 export function createSupabaseForRouteHandler() {
   const cookieStore = cookies();
 
@@ -49,7 +46,7 @@ export function createSupabaseForRouteHandler() {
           cookieStore.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: '', ...options });
+          cookieStore.set({ name, value: "", ...options });
         },
       },
       auth: {
@@ -61,8 +58,6 @@ export function createSupabaseForRouteHandler() {
 
   return supabase;
 }
-
-
 
 export function createSupabaseForServerAction() {
   const cookieStore = cookies();
@@ -79,7 +74,7 @@ export function createSupabaseForServerAction() {
           cookieStore.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: '', ...options });
+          cookieStore.set({ name, value: "", ...options });
         },
       },
       auth: {
@@ -91,5 +86,3 @@ export function createSupabaseForServerAction() {
 
   return supabase;
 }
-
-

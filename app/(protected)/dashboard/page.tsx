@@ -11,7 +11,6 @@ export default function DashboardPage() {
   const [buisnessList, setBuisnessList] = useState<Buisness[]>([]);
   const { data } = useSession();
   const [userId, setUserId] = useState("");
-  // const {};
 
   function handleClick() {
     route.push("/new-buisness");
